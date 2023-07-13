@@ -1,0 +1,42 @@
+/* Indigo Light scheme (Default) */
+/* Can be forced with data-theme="light" */
+[data-theme='light'],
+:root:not([data-theme='dark']) {
+  --primary: #3949ab;
+  --primary-hover: #303f9f;
+  --primary-focus: rgba(57, 73, 171, 0.125);
+  --primary-inverse: #fff;
+}
+
+/* Indigo Dark scheme (Auto) */
+/* Automatically enabled if user has Dark mode enabled */
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --primary: #3949ab;
+    --primary-hover: #3f51b5;
+    --primary-focus: rgba(57, 73, 171, 0.25);
+    --primary-inverse: #fff;
+  }
+}
+
+button {
+  display: inline-block;
+  width: 40%;
+  margin: 0.3em;
+}
+
+ul {
+  margin-top: 3em;
+}
+
+.center {
+  text-align: center;
+}
+
+.taskTitle {
+  font-size: larger;
+}
+
+.buttons {
+  margin-bottom: 1.5em;
+}
