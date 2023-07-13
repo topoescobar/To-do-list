@@ -1,67 +1,43 @@
-import { useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import AddTask from './AddTask';
 import TaskList from './TaskList';
 import './App.css';
 
-function tasksReducer(tasksArr, action) {
-  switch (action.type) {
-    case 'added': {
-      console.log('case added', tasksArr);
-      return [
-        ...tasksArr,
-        {
-          id: action.id,
-          title: action.title,
-          done: false,
-        },
-      ];
-    }
-    case 'changed': {
-      return tasksArr.map((task) => {
-        if (task.id === action.task.id) {
-          return action.task;
-        } else {
-          return task;
-        }
-      });
-    }
-    case 'deleted': {
-      return tasksArr.filter((task) => task.id !== action.id);
-    }
-
-    default: {
-      throw Error('Unknown action: ' + action.type);
-    }
-  }
-}
-
 export default function App() {
-  const [tasksArr, dispatch] = useReducer(tasksReducer, initialTasks);
+  const initialTasks = [];
+  const [nextId, setNextId] = useState(0)
+  const [tasksArr, dispatch] = useReducer(tasksReducer, initialTasks)
+  const [idsArr, setIdsArr] = useState([])
 
-  fetch('http://localhost:3001/api/tasks/')
-    .then((response) => response.json())
-    .then((json) => {
-      console.log('json', json);
-    });
+  useEffect(() => {
+    fetch('http://localhost:3001/api/tasks/')
+      .then((response) => response.json())
+      .then((json) => {
+        console.log('json', json)
+        dispatch({ type: 'SET_TASKS', payload: json })
+      });
+  }, [])
 
   function handleAddTask(title) {
+    setIdsArr(tasksArr.map((task) => task.id))
+    setNextId(Math.max(idsArr) + 1)
     dispatch({
-      type: 'added',
-      id: nextId++,
+      type: 'ADD',
+      id: nextId,
       title: title,
     });
   }
 
   function handleChangeTask(task) {
     dispatch({
-      type: 'changed',
+      type: 'UPDATE',
       task: task,
     });
   }
 
   function handleDeleteTask(taskId) {
     dispatch({
-      type: 'deleted',
+      type: 'REMOVE',
       id: taskId,
     });
   }
@@ -81,7 +57,40 @@ export default function App() {
   );
 }
 
-const initialTasks = [{ id: 0, title: 'Visit Kafka Museum', done: true }];
 
-const idsArr = initialTasks.map((task) => task.id);
-let nextId = Math.max(...idsArr) + 1;
+function tasksReducer(tasksArr, action) {
+  switch (action.type) {
+    case 'SET_TASKS':{
+      return action.payload
+    }
+    case 'ADD': {
+      return [
+        ...tasksArr,
+        {
+          id: action.id,
+          title: action.title,
+          done: false,
+        },
+      ];
+    }
+    case 'UPDATE': {
+      return tasksArr.map((task) => {
+        if (task.id === action.task.id) {
+          return action.task;
+        } else {
+          return task;
+        }
+      });
+    }
+    case 'REMOVE': {
+      return tasksArr.filter((task) => task.id !== action.id);
+    }
+
+    default: {
+      throw Error('Unknown action: ' + action.type);
+    }
+  }
+}
+
+
+//const initialTasks = [{ id: 0, title: 'Visit Kafka Museum', done: true }];

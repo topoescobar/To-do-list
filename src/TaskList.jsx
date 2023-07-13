@@ -3,7 +3,9 @@ import Task from './Task';
 
 export default function TaskList({ tasksArr, onChangeTask, onDeleteTask }) {
   return (
-    <ul className="container">
+    <div className="container">
+      <h3>Tareas: </h3>
+    <ul>
       {tasksArr.map((task) => (
         <li key={task.id}>
           <Task
@@ -14,5 +16,6 @@ export default function TaskList({ tasksArr, onChangeTask, onDeleteTask }) {
         </li>
       ))}
     </ul>
+    </div>
   );
 }
