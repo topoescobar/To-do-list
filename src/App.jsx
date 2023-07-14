@@ -5,9 +5,9 @@ import './App.css';
 
 export default function App() {
   const initialTasks = [];
-  const [nextId, setNextId] = useState(0)
   const [tasksArr, dispatch] = useReducer(tasksReducer, initialTasks)
   const [idsArr, setIdsArr] = useState([])
+  const [maxId, setMaxId] = useState(0)
 
   useEffect(() => {
     fetch('http://localhost:3001/api/tasks/')
@@ -18,28 +18,39 @@ export default function App() {
       });
   }, [])
 
-  function handleAddTask(title) {
+  useEffect(() => {
     setIdsArr(tasksArr.map((task) => task.id))
-    setNextId(Math.max(idsArr) + 1)
+  }, [tasksArr])
+
+  useEffect(() => {
+    setMaxId(Math.max(...idsArr) + 1)
+  }, [idsArr])
+  
+  function handleAddTask(title) {
+    
     dispatch({
       type: 'ADD',
-      id: nextId,
+      id: maxId,
       title: title,
-    });
+    })
   }
 
   function handleChangeTask(task) {
     dispatch({
       type: 'UPDATE',
       task: task,
-    });
+    })
   }
 
   function handleDeleteTask(taskId) {
     dispatch({
       type: 'REMOVE',
       id: taskId,
-    });
+    })
+  }
+
+  function handleClick(e) {
+    console.log('maxId', maxId)
   }
 
   return (
@@ -53,6 +64,7 @@ export default function App() {
         onChangeTask={handleChangeTask}
         onDeleteTask={handleDeleteTask}
       />
+      <button onClick={handleClick}>ver nextId</button>
     </>
   );
 }
@@ -62,6 +74,7 @@ function tasksReducer(tasksArr, action) {
   switch (action.type) {
     case 'SET_TASKS':{
       return action.payload
+      
     }
     case 'ADD': {
       return [
