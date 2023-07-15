@@ -2,6 +2,7 @@ import { useEffect, useReducer, useState } from 'react';
 import AddTask from './AddTask';
 import TaskList from './TaskList';
 import './App.css';
+import { getAPI } from './services/getAPI';
 
 export default function App() {
   const initialTasks = [];
@@ -10,24 +11,24 @@ export default function App() {
   const [maxId, setMaxId] = useState(0)
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/tasks/')
-      .then((response) => response.json())
-      .then((json) => {
-        console.log('json', json)
-        dispatch({ type: 'SET_TASKS', payload: json })
+      getAPI()
+      .then((data) => {
+        console.log('data', data)
+        dispatch({ type: 'SET_TASKS', payload: data })
       });
   }, [])
 
+// establecer el idMaximo del array traido de forma asicrona con los 2 siguientes useEffect
   useEffect(() => {
     setIdsArr(tasksArr.map((task) => task.id))
   }, [tasksArr])
 
+//esta fc se ejecutara luego de la anterior establezca el array de ids y calculara el siguiente id maximo
   useEffect(() => {
     setMaxId(Math.max(...idsArr) + 1)
   }, [idsArr])
   
   function handleAddTask(title) {
-    
     dispatch({
       type: 'ADD',
       id: maxId,
