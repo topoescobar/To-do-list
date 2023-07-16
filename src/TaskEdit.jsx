@@ -36,7 +36,8 @@ export default function TaskEdit({ task, onChangeTask, onDeleteTask }) {
   } else {
     taskContent = (
       <>
-        <b className="taskTitle">{task.title}</b>
+        <b className="taskTitle">{task.title}</b> 
+        <p>{task.description}</p>
         <div className="container buttons">
           <button onClick={handleEdit}>Editar</button>
           <button onClick={deleteClick}>Eliminar</button>

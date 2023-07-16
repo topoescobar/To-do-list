@@ -28,11 +28,12 @@ export default function App() {
     setMaxId(Math.max(...idsArr) + 1)
   }, [idsArr])
   
-  function handleAddTask(title) {
+  function handleAddTask(task) {
     dispatch({
       type: 'ADD',
       id: maxId,
-      title: title,
+      title: task.title,
+      description: task.description
     })
   }
 
@@ -83,6 +84,7 @@ function tasksReducer(tasksArr, action) {
         {
           id: action.id,
           title: action.title,
+          description: action.description,
           done: false,
         },
       ];
